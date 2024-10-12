@@ -17,6 +17,18 @@ interface Location {
   country: string;
 }
 
+const getLocationDisplay = (location: Location) => {
+  return [
+    location.name,
+    location.admin1,
+    location.admin2,
+    location.admin3,
+    location.admin4,
+  ]
+    .filter((field) => field)
+    .join(", ");
+};
+
 function App() {
   const [query, setQuery] = useState<string>("");
   const [locations, setLocations] = useState<Location[]>([]);
@@ -51,6 +63,13 @@ function App() {
         />
         <button>search</button>
       </form>
+      <ul>
+        {locations.map((location) => (
+          <li key={location.id}>
+            <button>{getLocationDisplay(location)}</button>
+          </li>
+        ))}
+      </ul>
     </>
   );
 }
