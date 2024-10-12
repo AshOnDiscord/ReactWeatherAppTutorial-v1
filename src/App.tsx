@@ -1,5 +1,5 @@
 import { fetchWeatherApi } from "openmeteo";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 
 const WEATHER_URL = "https://api.open-meteo.com/v1/forecast";
 
@@ -32,6 +32,7 @@ const getLocationDisplay = (location: Location) => {
 function App() {
   const [query, setQuery] = useState<string>("");
   const [locations, setLocations] = useState<Location[]>([]);
+  const [currentLocation, setCurrentLocation] = useState<Location | null>(null);
 
   const handleSearch = async (e: FormEvent) => {
     e.preventDefault();
@@ -52,6 +53,11 @@ function App() {
     setQuery("");
   };
 
+  useEffect(() => {
+    console.log("Location", currentLocation);
+    if (!currentLocation) return;
+  }, [currentLocation]);
+
   return (
     <>
       <form className="search" onSubmit={handleSearch}>
@@ -66,7 +72,9 @@ function App() {
       <ul>
         {locations.map((location) => (
           <li key={location.id}>
-            <button>{getLocationDisplay(location)}</button>
+            <button onClick={() => setCurrentLocation(location)}>
+              {getLocationDisplay(location)}
+            </button>
           </li>
         ))}
       </ul>
