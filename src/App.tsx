@@ -1,12 +1,48 @@
-import { WeatherApiResponse } from "@openmeteo/sdk/weather-api-response";
-import { useState } from "react";
+import { fetchWeatherApi } from "openmeteo";
+import { FormEvent, useState } from "react";
+
+const WEATHER_URL = "https://api.open-meteo.com/v1/forecast";
+
+const GEOCODING_URL = "https://geocoding-api.open-meteo.com/v1/search";
+
+interface Location {
+  id: number;
+  name: string;
+  latitude: number;
+  longitude: number;
+  admin1?: string;
+  admin2?: string;
+  admin3?: string;
+  admin4?: string;
+  country: string;
+}
 
 function App() {
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState<string>("");
+  const [locations, setLocations] = useState<Location[]>([]);
+
+  const handleSearch = async (e: FormEvent) => {
+    e.preventDefault();
+    const params = new URLSearchParams({
+      name: query,
+      count: "10",
+      language: "en",
+      format: "json",
+    });
+    const req = await fetch(`${GEOCODING_URL}?${params.toString()}`, {
+      mode: "cors",
+    });
+    const data: {
+      results: Location[];
+    } = await req.json();
+    console.log(data);
+    setLocations(data.results);
+    setQuery("");
+  };
 
   return (
     <>
-      <form className="search">
+      <form className="search" onSubmit={handleSearch}>
         <input
           placeholder="Location"
           type="text"
@@ -15,14 +51,6 @@ function App() {
         />
         <button>search</button>
       </form>
-      <p
-        style={{
-          textAlign: "center",
-          fontSize: "1.5rem",
-        }}
-      >
-        {query}
-      </p>
     </>
   );
 }
