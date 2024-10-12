@@ -6,7 +6,7 @@ function App() {
 
   return (
     <>
-      <form>
+      <form className="search">
         <input
           placeholder="Location"
           type="text"
@@ -15,7 +15,14 @@ function App() {
         />
         <button>search</button>
       </form>
-      <p>{query}</p>
+      <p
+        style={{
+          textAlign: "center",
+          fontSize: "1.5rem",
+        }}
+      >
+        {query}
+      </p>
     </>
   );
 }
